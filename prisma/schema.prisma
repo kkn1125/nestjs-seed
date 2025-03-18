@@ -44,14 +44,14 @@ model User {
   isEmailConfirmed Boolean   @default(false) @map("is_email_confirmed")
   role             Int       @default(dbgenerated("1"))
   state            Int       @default(dbgenerated("1"))
+  salt             String    @db.VarChar(100)
+  iteration        Int       @db.UnsignedInt
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
   deletedAt        DateTime? @map("deleted_at")
   lastLogin        DateTime? @map("last_login")
 
   profile  Profile?
-  boards   Board[]
-  comments Comment[]
 
   @@map("user")
 }

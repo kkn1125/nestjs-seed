@@ -12,6 +12,12 @@ npm i -D @types/cookie-parser tsconfig-paths @types/compression
 npm i -D vitest vite-tsconfig-paths vitest
 
 npm i -D @types/multer # 파일 업로드 / 응답 시 Buffer.from으로 감싸야 이미지 정상 응답
+
+npm install --save @nestjs/passport passport passport-local # 보안 (로그인)
+npm install --save-dev @types/passport-local
+
+npm install --save @nestjs/jwt passport-jwt # jwt
+npm install --save-dev @types/passport-jwt
 ```
 
 ### 선택 의존 설치
