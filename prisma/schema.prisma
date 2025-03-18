@@ -71,29 +71,3 @@ model Profile {
   @@map("profile")
 }
 
-model Board {
-  id        Int       @id @default(autoincrement())
-  userId    Int       @map("user_id")
-  title     String    @db.VarChar(50)
-  content   String    @db.LongText
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  deletedAt DateTime? @map("deleted_at")
-
-  user     User      @relation(fields: [userId], references: [id])
-  comments Comment[]
-
-  @@map("board")
-}
-
-model Comment {
-  id      Int    @id @default(autoincrement())
-  userId  Int    @map("user_id")
-  boardId Int    @map("board_id")
-  content String @db.VarChar(200)
-
-  user  User  @relation(fields: [userId], references: [id])
-  board Board @relation(fields: [boardId], references: [id])
-
-  @@map("comment")
-}
