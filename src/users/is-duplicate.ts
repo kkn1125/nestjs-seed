@@ -22,7 +22,7 @@ export class IsDuplicateConstraint implements ValidatorConstraintInterface {
     const where = {
       [name]: value,
     } as Prisma.UserWhereUniqueInput;
-    const user = await this.prisma.user.findUnique({ where });
+    const user = await this.prisma.user.findFirst({ where });
     if (user) {
       return false;
     }

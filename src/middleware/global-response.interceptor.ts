@@ -11,12 +11,9 @@ import { map, Observable } from 'rxjs';
 @Injectable()
 export class GlobalResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const ctx = context.switchToHttp();
-    const request = ctx.getRequest<Request>();
-    const response = ctx.getRequest<Response>();
-
+    const request = context.switchToHttp().getRequest<Request>();
+    const response = context.switchToHttp().getResponse<Response>();
     const status = response.statusCode;
-
     return next
       .handle()
       .pipe(map((data) => SuccessResponseFormat(status, data)));

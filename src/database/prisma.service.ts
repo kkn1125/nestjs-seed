@@ -66,7 +66,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   constructor(private readonly commonService: CommonService) {
     super({
-      log: ['query'],
+      log: ['query', 'error'],
       // errorFormat: 'colorless',
     });
   }

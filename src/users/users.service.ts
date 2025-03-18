@@ -26,6 +26,14 @@ export class UsersService {
         ...createUserDto,
         ...hashedData,
       },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        role: true,
+        state: true,
+        createdAt: true,
+      },
     });
   }
 

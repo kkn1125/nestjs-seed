@@ -21,11 +21,12 @@ export class GlobalExceptionFilter<T extends HttpException>
     if (exception instanceof HttpException) {
       const { message } = exception.getResponse() as HttpException;
       const status = exception.getStatus();
+      console.log('status', status);
       response.status(status).json(ErrorResponseFormat(status, message));
       return;
     }
 
-    console.log(exception);
+    console.log('exception', exception);
 
     response.status(400).json(ErrorResponseFormat(400, 'message'));
   }

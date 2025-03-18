@@ -46,9 +46,6 @@ async function bootstrap() {
   app.useGlobalFilters(new GlobalExceptionFilter());
   app.useGlobalInterceptors(new GlobalResponseInterceptor());
 
-  // custom class-validator에서 service 등을 주입하기 위해서 아래 설정이 필요
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
   /* Swagger Docs */
   const config = new DocumentBuilder()
     .setTitle('시드 템플릿')
@@ -71,6 +68,8 @@ async function bootstrap() {
       docExpansion: 'none',
     },
   });
+
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(common.port, common.host);
 
