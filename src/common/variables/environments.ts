@@ -1,8 +1,9 @@
-import * as dotenv from 'dotenv';
-import * as path from 'path';
-import * as fs from 'fs';
+import { getEnvValueAs } from '@util/getEnvValueAs';
+import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
 
-const RUN_MODE = process.env.NODE_ENV ?? 'production';
+export const RUN_MODE = process.env.NODE_ENV ?? 'production';
 
 dotenv.config({
   path: path.join(path.resolve(), '.env'),
@@ -22,3 +23,4 @@ export const SESSION_SECRET_KEY = process.env.SESSION_SECRET_KEY as string;
 export const REDIS_HOST = process.env.REDIS_HOST as string;
 export const REDIS_PORT = +(process.env.REDIS_PORT ?? 6379);
 export const REDIS_PASSWORD = process.env.REDIS_PASSWORD as string;
+export const LOG_SAVE = getEnvValueAs(Boolean, 'LOG_SAVE');

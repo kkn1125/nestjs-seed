@@ -61,25 +61,6 @@
         "isUpdatedAt": false
       },
       {
-        "name": "password",
-        "kind": "scalar",
-        "isList": false,
-        "isRequired": true,
-        "isUnique": false,
-        "isId": false,
-        "isReadOnly": false,
-        "hasDefaultValue": false,
-        "type": "String",
-        "nativeType": [
-          "VarChar",
-          [
-            "150"
-          ]
-        ],
-        "isGenerated": false,
-        "isUpdatedAt": false
-      },
-      {
         "name": "isEmailConfirmed",
         "dbName": "is_email_confirmed",
         "kind": "scalar",
@@ -136,42 +117,6 @@
         "isUpdatedAt": false
       },
       {
-        "name": "salt",
-        "kind": "scalar",
-        "isList": false,
-        "isRequired": true,
-        "isUnique": false,
-        "isId": false,
-        "isReadOnly": false,
-        "hasDefaultValue": false,
-        "type": "String",
-        "nativeType": [
-          "VarChar",
-          [
-            "100"
-          ]
-        ],
-        "isGenerated": false,
-        "isUpdatedAt": false
-      },
-      {
-        "name": "iteration",
-        "kind": "scalar",
-        "isList": false,
-        "isRequired": true,
-        "isUnique": false,
-        "isId": false,
-        "isReadOnly": false,
-        "hasDefaultValue": false,
-        "type": "Int",
-        "nativeType": [
-          "UnsignedInt",
-          []
-        ],
-        "isGenerated": false,
-        "isUpdatedAt": false
-      },
-      {
         "name": "createdAt",
         "dbName": "created_at",
         "kind": "scalar",
@@ -221,8 +166,8 @@
         "isUpdatedAt": false
       },
       {
-        "name": "lastLogin",
-        "dbName": "last_login",
+        "name": "lastLoginAt",
+        "dbName": "last_login_at",
         "kind": "scalar",
         "isList": false,
         "isRequired": false,
@@ -249,6 +194,143 @@
         "relationName": "ProfileToUser",
         "relationFromFields": [],
         "relationToFields": [],
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "userSecret",
+        "kind": "object",
+        "isList": false,
+        "isRequired": false,
+        "isUnique": false,
+        "isId": false,
+        "isReadOnly": false,
+        "hasDefaultValue": false,
+        "type": "UserSecret",
+        "nativeType": null,
+        "relationName": "UserToUserSecret",
+        "relationFromFields": [],
+        "relationToFields": [],
+        "isGenerated": false,
+        "isUpdatedAt": false
+      }
+    ],
+    "primaryKey": null,
+    "uniqueFields": [],
+    "uniqueIndexes": [],
+    "isGenerated": false
+  },
+  {
+    "name": "UserSecret",
+    "dbName": "user_secret",
+    "schema": null,
+    "fields": [
+      {
+        "name": "id",
+        "kind": "scalar",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": false,
+        "isId": true,
+        "isReadOnly": false,
+        "hasDefaultValue": true,
+        "type": "Int",
+        "nativeType": null,
+        "default": {
+          "name": "autoincrement",
+          "args": []
+        },
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "userId",
+        "dbName": "user_id",
+        "kind": "scalar",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": true,
+        "isId": false,
+        "isReadOnly": true,
+        "hasDefaultValue": false,
+        "type": "Int",
+        "nativeType": null,
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "password",
+        "kind": "scalar",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": false,
+        "isId": false,
+        "isReadOnly": false,
+        "hasDefaultValue": false,
+        "type": "String",
+        "nativeType": [
+          "VarChar",
+          [
+            "150"
+          ]
+        ],
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "salt",
+        "kind": "scalar",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": false,
+        "isId": false,
+        "isReadOnly": false,
+        "hasDefaultValue": false,
+        "type": "String",
+        "nativeType": [
+          "VarChar",
+          [
+            "100"
+          ]
+        ],
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "iteration",
+        "kind": "scalar",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": false,
+        "isId": false,
+        "isReadOnly": false,
+        "hasDefaultValue": false,
+        "type": "Int",
+        "nativeType": [
+          "UnsignedInt",
+          []
+        ],
+        "isGenerated": false,
+        "isUpdatedAt": false
+      },
+      {
+        "name": "user",
+        "kind": "object",
+        "isList": false,
+        "isRequired": true,
+        "isUnique": false,
+        "isId": false,
+        "isReadOnly": false,
+        "hasDefaultValue": false,
+        "type": "User",
+        "nativeType": null,
+        "relationName": "UserToUserSecret",
+        "relationFromFields": [
+          "userId"
+        ],
+        "relationToFields": [
+          "id"
+        ],
         "isGenerated": false,
         "isUpdatedAt": false
       }

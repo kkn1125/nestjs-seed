@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { Profile } from './Profile';
+import { UserSecret } from './UserSecret';
 
 export class User {
   @ApiProperty({ type: Number })
@@ -9,18 +10,12 @@ export class User {
   email!: string;
   @ApiProperty({ type: String })
   username!: string;
-  @ApiProperty({ type: String })
-  password!: string;
   @ApiProperty({ type: Boolean })
   
   @ApiProperty({ type: Number })
   role!: number;
   @ApiProperty({ type: Number })
   state!: number;
-  @ApiProperty({ type: String })
-  salt!: string;
-  @ApiProperty({ type: Number })
-  iteration!: number;
   @ApiProperty({ type: Date })
   createdAt!: Date;
   @ApiProperty({ type: Date })
@@ -28,7 +23,9 @@ export class User {
   @ApiProperty({ type: Date })
   deletedAt!: Date | null;
   @ApiProperty({ type: Date })
-  lastLogin!: Date | null;
+  lastLoginAt!: Date | null;
   @ApiProperty({ type: () => Profile })
   profile!: Profile | null;
+  @ApiProperty({ type: () => UserSecret })
+  userSecret!: UserSecret | null;
 }

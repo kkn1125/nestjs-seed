@@ -8,6 +8,7 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisService {
   client!: Redis;
+
   constructor(private readonly commonService: CommonService) {
     const redis = commonService.getConfig<RedisConf>('redis');
     this.client = new Redis(redis);

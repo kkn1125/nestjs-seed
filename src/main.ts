@@ -14,6 +14,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import { AppModule } from './app.module';
 import { CommonService } from './common/common.service';
+import { RedisService } from './database/redis.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -21,6 +22,7 @@ async function bootstrap() {
   });
 
   const commonService = app.get(CommonService);
+  const redisService = app.get(RedisService);
   const common = commonService.getConfig<CommonConf>('common');
   const secret = commonService.getConfig<SecretConf>('secret');
 
@@ -44,7 +46,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.useGlobalGuards(new PermissionGuard(loggerService));
   app.useGlobalFilters(new GlobalExceptionFilter());
-  app.useGlobalInterceptors(new GlobalResponseInterceptor());
+  app.useGlobalInterceptors(new GlobalResponseInterceptor(redisService));
 
   /* Swagger Docs */
   const config = new DocumentBuilder()

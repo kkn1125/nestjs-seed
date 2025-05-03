@@ -8,7 +8,6 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
-import { CreateJwtDto } from './dto/create-jwt.dto';
 import { LoginAuthDto } from './dto/login-auth.dto';
 
 @Injectable()
@@ -54,24 +53,27 @@ export class AuthService {
   async validateUser(email: string, userPassword: string) {
     const user = await this.client.user.findUnique({
       where: { email },
+      include: {
+        userSecret: true,
+      },
     });
 
-    if (!user) {
+    if (!user || !user.userSecret) {
       throw new BadRequestException();
     }
 
     const isVerified = this.client.user.verifyPassword(
       userPassword,
-      user.password,
-      user.salt,
-      user.iteration,
+      user.userSecret.password,
+      user.userSecret.salt,
+      user.userSecret.iteration,
     );
 
     if (!isVerified) {
       return null;
     }
 
-    const { password, iteration, salt, ...result } = user;
+    const { userSecret, ...result } = user;
     return result;
   }
 }

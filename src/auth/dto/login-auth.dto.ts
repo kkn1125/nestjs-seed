@@ -4,10 +4,7 @@ type ExcludeLoginProperties =
   | 'isEmailConfirmed'
   | 'createdAt'
   | 'updatedAt'
-  | 'deletedAt'
-  | 'password'
-  | 'salt'
-  | 'iteration';
+  | 'deletedAt';
 
 export class LoginAuthDto implements Omit<User, ExcludeLoginProperties> {
   id!: number;
@@ -15,5 +12,5 @@ export class LoginAuthDto implements Omit<User, ExcludeLoginProperties> {
   username!: string;
   role!: number;
   state!: number;
-  lastLogin!: Date | null;
+  lastLoginAt!: Date | null;
 }

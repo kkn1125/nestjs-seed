@@ -1,5 +1,5 @@
-import { HOST, PORT } from './environments';
 import * as pkg from '../../../package.json';
+import { HOST, PORT } from './environments';
 
 export const DEFAULT_LOG_CONTEXT = 'System';
 export const LOG_FORMAT = 'YYYY.MM.DD HH:mm:ss.SSS';

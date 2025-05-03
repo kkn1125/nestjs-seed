@@ -1,14 +1,15 @@
 import swc from 'unplugin-swc';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
     reporters: ['default'],
     coverage: {
-      enabled: true,
+      enabled: false,
       reportOnFailure: true,
     },
+    exclude: [...configDefaults.exclude, 'lib/**/*.spec.ts'],
   },
   plugins: [
     swc.vite({

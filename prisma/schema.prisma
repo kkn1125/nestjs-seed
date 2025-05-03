@@ -40,20 +40,33 @@ model User {
   id               Int       @id @default(autoincrement())
   email            String    @unique @db.VarChar(70)
   username         String    @db.VarChar(50)
-  password         String    @db.VarChar(150)
+  // password         String    @db.VarChar(150)
   isEmailConfirmed Boolean   @default(false) @map("is_email_confirmed")
   role             Int       @default(dbgenerated("1"))
   state            Int       @default(dbgenerated("1"))
-  salt             String    @db.VarChar(100)
-  iteration        Int       @db.UnsignedInt
+  // salt             String    @db.VarChar(100)
+  // iteration        Int       @db.UnsignedInt
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
   deletedAt        DateTime? @map("deleted_at")
-  lastLogin        DateTime? @map("last_login")
+  lastLoginAt      DateTime? @map("last_login_at")
 
-  profile  Profile?
+  profile    Profile?
+  userSecret UserSecret?
 
   @@map("user")
+}
+
+model UserSecret {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @unique @map("user_id")
+  password  String @db.VarChar(150)
+  salt      String @db.VarChar(100)
+  iteration Int    @db.UnsignedInt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("user_secret")
 }
 
 model Profile {
@@ -70,4 +83,3 @@ model Profile {
 
   @@map("profile")
 }
-

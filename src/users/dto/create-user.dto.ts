@@ -1,4 +1,5 @@
 import { User } from '@/_gen/User';
+import { UserSecret } from '@_gen/UserSecret';
 import { UserRole } from '@common/enums/UserRole';
 import { UserState } from '@common/enums/UserState';
 import { IsDuplicate } from '@users/is-duplicate';
@@ -12,17 +13,18 @@ import {
 
 type ExcludeUserProperties =
   | 'id'
-  | 'salt'
-  | 'iteration'
   | 'createdAt'
   | 'updatedAt'
   | 'deletedAt'
-  | 'lastLogin'
+  | 'lastLoginAt'
   | 'profile'
   | 'boards'
+  | 'userSecret'
   | 'comments';
 
-export class CreateUserDto implements Omit<User, ExcludeUserProperties> {
+export class CreateUserDto
+  implements Omit<User, ExcludeUserProperties>, Pick<UserSecret, 'password'>
+{
   @IsDuplicate()
   @IsEmail()
   @IsNotEmpty()
