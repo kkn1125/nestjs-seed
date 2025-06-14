@@ -36,6 +36,7 @@ generatorHandler({
 function useTemplate(model: DMMF.Model): string {
   let swaggerImports = new Set(['ApiProperty']);
   let relatedModels = new Set<string>();
+  let enumImports = new Set<string>();
   let classDefinition = `export class ${model.name} {\n`;
 
   model.fields.forEach((field) => {
@@ -43,16 +44,25 @@ function useTemplate(model: DMMF.Model): string {
       name,
       type,
       isRequired,
+      kind,
       isList,
       default: defaultValue,
       relationName,
     } = field;
-    let propertyType = getType(type, isList);
+    const isEnum = kind === 'enum';
+    let propertyType = getType(type, isList, isEnum);
     let propertyDefinition = '';
     let isNullable = !isRequired;
     let needsAssertion = true;
     let propertyDecorator = 'ApiProperty';
-    let decoratorOptions = `{ type: ${getSwaggerType(type)} }`; // 기본 원시 타입 지정
+    let decoratorOptions = isEnum
+      ? `{ enum: ${type} }`
+      : `{ type: ${getSwaggerType(type, isEnum)} }`;
+
+    // enum 타입이면 import 추가
+    if (isEnum) {
+      enumImports.add(type);
+    }
 
     // 관계형 모델 처리
     if (relationName) {
@@ -63,21 +73,20 @@ function useTemplate(model: DMMF.Model): string {
     }
 
     // 기본값이 있는 경우
-    if (defaultValue !== undefined) {
-      if (
-        typeof defaultValue === 'string' ||
-        typeof defaultValue === 'number'
-      ) {
-        propertyDecorator = 'ApiPropertyOptional';
-        swaggerImports.add('ApiPropertyOptional');
-        propertyDefinition = `${name}: ${propertyType}${isNullable ? ' | null' : ''} = ${formatValue(defaultValue, type)};`;
-      } else if (
-        typeof defaultValue === 'object' &&
-        'name' in defaultValue &&
-        'args' in defaultValue
-      ) {
-        propertyDefinition = `${name}!: ${propertyType};`;
-      }
+    if (
+      typeof defaultValue === 'string' ||
+      typeof defaultValue === 'number' ||
+      typeof defaultValue === 'boolean'
+    ) {
+      propertyDecorator = 'ApiProperty';
+      swaggerImports.add('ApiProperty');
+      propertyDefinition = `${name}: ${propertyType}${isNullable ? ' | null' : ''} = ${formatValue(defaultValue, type)};`;
+    } else if (
+      typeof defaultValue === 'object' &&
+      'name' in defaultValue &&
+      'args' in defaultValue
+    ) {
+      propertyDefinition = `${name}!: ${propertyType};`;
     } else {
       // 기본값이 없는 경우
       propertyDefinition = isNullable
@@ -95,6 +104,12 @@ function useTemplate(model: DMMF.Model): string {
   // Swagger import 구문 생성
   const swaggerImportStatement = `import { ${Array.from(swaggerImports).join(', ')} } from '@nestjs/swagger';`;
 
+  // enum import 구문 생성 (여러 enum이 있을 경우 한 줄로)
+  const enumImportStatement =
+    enumImports.size > 0
+      ? `import { ${Array.from(enumImports).join(', ')} } from '@prisma/client';`
+      : '';
+
   // 관계형 모델 import 추가
   const relatedModelImports = Array.from(relatedModels)
     .map(
@@ -102,13 +117,18 @@ function useTemplate(model: DMMF.Model): string {
     )
     .join('\n');
 
-  return [swaggerImportStatement, relatedModelImports, classDefinition]
+  return [
+    swaggerImportStatement,
+    enumImportStatement,
+    relatedModelImports,
+    classDefinition,
+  ]
     .filter(Boolean)
     .join('\n\n');
 }
 
 // ✅ Prisma 타입을 TS 타입으로 변환
-function getType(prismaType: string, isList: boolean): string {
+function getType(prismaType: string, isList: boolean, isEnum = false): string {
   const typeMap: { [key: string]: string } = {
     String: 'string',
     Int: 'number',
@@ -117,12 +137,13 @@ function getType(prismaType: string, isList: boolean): string {
     DateTime: 'Date',
     Bytes: 'Buffer',
   };
-  const mappedType = typeMap[prismaType] || prismaType;
+  // enum이면 타입 그대로
+  const mappedType = isEnum ? prismaType : typeMap[prismaType] || prismaType;
   return isList ? `${mappedType}[]` : mappedType;
 }
 
 // ✅ Swagger 타입 변환 (원시 타입을 대문자로)
-function getSwaggerType(prismaType: string): string {
+function getSwaggerType(prismaType: string, isEnum = false): string {
   const typeMap: { [key: string]: string } = {
     String: 'String',
     Int: 'Number',
@@ -131,7 +152,8 @@ function getSwaggerType(prismaType: string): string {
     DateTime: 'Date',
     Bytes: 'Buffer',
   };
-  return typeMap[prismaType] || prismaType;
+  // enum이면 enum 객체로
+  return isEnum ? prismaType : typeMap[prismaType] || prismaType;
 }
 
 // ✅ 기본값 포맷팅 함수
